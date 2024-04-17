@@ -111,14 +111,90 @@
 .headers off
 
 -- Drop existing tables, so you'll start fresh each time this script is run.
--- TODO!
+    DROP TABLE IF EXISTS movies;
+    DROP TABLE IF EXISTS studios;
+    DROP TABLE IF EXISTS movie_roles;
+    DROP TABLE IF EXISTS actors;
 
 -- Create new tables, according to your domain model
--- TODO!
+    CREATE TABLE movies (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  movie_title TEXT,
+  movie_year INTEGER,
+  mpaa_rating TEXT,
+  studio_id INTEGER
+);
+
+CREATE TABLE studios (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  studio_name TEXT
+);
+
+CREATE TABLE movie_roles (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  role_name TEXT,
+  actor_id INTEGER,
+  movie_id INTEGER
+);
+
+CREATE TABLE actors (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  first_name TEXT,
+  last_name TEXT
+);
 
 -- Insert data into your database that reflects the sample data shown above
 -- Use hard-coded foreign key IDs when necessary
--- TODO!
+
+INSERT INTO movies
+    ( movie_title, movie_year, mpaa_rating, studio_id) 
+    VALUES 
+        ('Batman Begins', '2005', 'PG-13', '1'),
+        ('The Dark Knight', '2008', 'PG-13', '1'),
+        ('The Dark Knight Rises', '2012', 'PG-13', '1');  
+
+INSERT INTO studios
+    (studio_name) 
+    VALUES 
+        ('studio_name');
+
+INSERT INTO actors
+    ( first_name, last_name) 
+    VALUES 
+        ('Tom', 'Hardy'),
+        ('Maggie', 'Gyllenhaal'),
+        ('Liam', 'Neeson'),
+        ('Katie', 'Holmes'),
+        ('Heath', 'Ledger'),
+        ('Gary', 'Oldman'),
+        ('Christian', 'Bale'),
+        ('Anne', 'Hathaway'),
+        ('Aaron', 'Eckhart'),
+        (' Michael', 'Caine'),
+        (' Joseph', 'Gordon-Levitt');
+
+INSERT INTO movie_roles (
+    role_name,
+    actor_id,
+    movie_id
+)
+    VALUES
+        ('Bruce Wayne',7, 1),
+        ('Alfred',10, 1),
+        ("Ra's Al Ghul",3,1),
+        ('Rachel Dawes',4, 1),
+        ('Commissioner Gordon',6, 2),
+        ('Bruce Wayne',7,2),
+        ('Jocker',5,2),
+        ('Harvey Dent',9,2),
+        ('Alfred',10,2),
+        ('Rachel Dawes',2,2),
+        ('Bruce Wayne',7,3),
+        ('Comissioner Gordon',6,3),
+        ('Bane',1,3),
+        ('John Blake',11,3),
+        ('Selina Kyle',8,3);
+
 
 -- Prints a header for the movies output
 .print "Movies"
@@ -126,7 +202,10 @@
 .print ""
 
 -- The SQL statement for the movies output
--- TODO!
+select m.movie_title, m.movie_year, m.MPAA_rating, s.studio_name
+from movies m
+inner join studios s
+on m.studio_id = s.id;
 
 -- Prints a header for the cast output
 .print ""
@@ -136,4 +215,15 @@
 
 
 -- The SQL statement for the cast output
--- TODO!
+select
+    m.movie_title,
+    a.first_name || ' ' || a.last_name AS full_name,
+    r.role_name
+
+from movies m
+
+    inner join movie_roles r
+        on m.id = r.movie_id
+
+    inner join actors a
+        on r.actor_id = a.id;
